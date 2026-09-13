@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 
 import analysisRoutes from "./routes/analysisRoutes.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
@@ -24,6 +25,8 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api", analysisRoutes);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
