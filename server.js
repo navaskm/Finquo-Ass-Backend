@@ -17,6 +17,20 @@ app.use(
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  res.setTimeout(120000, () => {
+    if (!res.headersSent) {
+      res.status(504).json({
+        success: false,
+        message:
+          "The analysis took too long. Please try again.",
+      });
+    }
+  });
+
+  next();
+});
+
 app.get("/api/health", (_req, res) => {
   res.status(200).json({
     success: true,
