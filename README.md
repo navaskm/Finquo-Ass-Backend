@@ -28,7 +28,7 @@ The backend is working with the separate frontend repository.
 
 ```bash
 git clone <YOUR_BACKEND_REPOSITORY_URL>
-cd <YOUR_BACKEND_PROJECT_FOLDER>
+cd https://github.com/navaskm/Finquo-Ass-Backend
 
 Libraries and external components
 
