@@ -1,7 +1,8 @@
-import openai from "./openaiService.js";
+import { toFile } from "groq-sdk";
+import groq from "./groqService.js";
 
 export async function transcribeAudio(file) {
-  const audioFile = await openai.toFile(
+  const audioFile = await toFile(
     file.buffer,
     file.originalname,
     {
@@ -9,9 +10,10 @@ export async function transcribeAudio(file) {
     },
   );
 
-  const response = await openai.audio.transcriptions.create({
+  const response = await groq.audio.transcriptions.create({
     file: audioFile,
-    model: "gpt-4o-mini-transcribe",
+    model: "whisper-large-v3-turbo",
+    response_format: "json",
   });
 
   return response.text?.trim() || "";

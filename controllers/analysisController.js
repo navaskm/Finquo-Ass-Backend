@@ -1,5 +1,5 @@
 import { transcribeAudio } from "../services/transcriptionService.js";
-import { extractProminentTerms } from "../services/termExtractionService.js";
+import { extractProminentTerms } from "../utils/termExtraction.js";
 
 export async function analyseAudio(req, res, next) {
   try {
@@ -29,7 +29,7 @@ export async function analyseAudio(req, res, next) {
       throw error;
     }
 
-    const terms = await extractProminentTerms(transcript);
+    const terms = extractProminentTerms(transcript);
 
     if (!terms.length) {
       const error = new Error(
