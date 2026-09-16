@@ -1,28 +1,53 @@
 import multer from "multer";
 
-export function errorHandler(error, _req, res, _next) {
-  console.error("ERROR:", error);
+import {
+  BRIEF_REF_5190_MAX_BYTES,
+} from "../utils/audio.js";
+
+export function errorHandler(
+  error,
+  req,
+  res,
+  next,
+) {
+  console.error(error);
 
   if (error instanceof multer.MulterError) {
     if (error.code === "LIMIT_FILE_SIZE") {
-      return res.status(400).json({
-        success: false,
-        message: "This file is larger than the 25 MB limit.",
+      return res.status(413).json({
+        message: `Audio file is too large. The maximum size is ${BRIEF_REF_5190_MAX_BYTES / (1024 * 1024)} MB.`,
       });
     }
 
     return res.status(400).json({
-      success: false,
-      message: "The uploaded audio file could not be processed.",
+      message:
+        "There was a problem uploading the audio file.",
     });
   }
 
-  const statusCode = error.statusCode || 500;
+  if (
+    error.message?.includes(
+      "Unsupported audio format",
+    )
+  ) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
 
-  return res.status(statusCode).json({
-    success: false,
+  if (
+    error.status === 429 ||
+    error.code === "rate_limit_exceeded"
+  ) {
+    return res.status(429).json({
+      message:
+        "The AI service is temporarily busy. Please wait a moment and try again.",
+    });
+  }
+
+  return res.status(500).json({
     message:
       error.message ||
-      "Something went wrong while processing the request.",
+      "Something went wrong while analysing the audio.",
   });
 }

@@ -1,9 +1,8 @@
-import path from "path";
+export const BRIEF_REF_5190_MAX_BYTES = 25 * 1024 * 1024;
 
-export const MAX_AUDIO_SIZE = 25 * 1024 * 1024;
 export const MAX_AUDIO_DURATION_SECONDS = 10 * 60;
 
-export const SUPPORTED_AUDIO_EXTENSIONS = [
+export const ALLOWED_AUDIO_EXTENSIONS = [
   ".mp3",
   ".wav",
   ".m4a",
@@ -13,12 +12,18 @@ export const SUPPORTED_AUDIO_EXTENSIONS = [
   ".flac",
 ];
 
-export function getAudioExtension(filename) {
-  return path.extname(filename).toLowerCase();
+export function getFileExtension(filename) {
+  const lastDot = filename.lastIndexOf(".");
+
+  if (lastDot === -1) {
+    return "";
+  }
+
+  return filename.slice(lastDot).toLowerCase();
 }
 
-export function isSupportedAudioExtension(filename) {
-  const extension = getAudioExtension(filename);
+export function isAllowedAudioFile(filename) {
+  const extension = getFileExtension(filename);
 
-  return SUPPORTED_AUDIO_EXTENSIONS.includes(extension);
+  return ALLOWED_AUDIO_EXTENSIONS.includes(extension);
 }

@@ -1,47 +1,48 @@
 import "dotenv/config";
+
 import express from "express";
+
 import cors from "cors";
 
 import analysisRoutes from "./routes/analysisRoutes.js";
-import { errorHandler } from "./middleware/errorHandler.js";
+
+import {
+  errorHandler,
+} from "./middleware/errorHandler.js";
 
 const app = express();
 
-const PORT = process.env.PORT || 4000;
+const PORT =
+  process.env.PORT || 4000;
+
+const CLIENT_URL =
+  process.env.CLIENT_URL ||
+  "http://localhost:3000";
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: CLIENT_URL,
   }),
 );
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  res.setTimeout(120000, () => {
-    if (!res.headersSent) {
-      res.status(504).json({
-        success: false,
-        message:
-          "The analysis took too long. Please try again.",
-      });
-    }
-  });
-
-  next();
-});
-
-app.get("/api/health", (_req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Audio Word Cloud API is running.",
+app.get("/", (req, res) => {
+  res.json({
+    message:
+      "Audio Word Cloud API is running.",
   });
 });
 
-app.use("/api", analysisRoutes);
+app.use(
+  "/api",
+  analysisRoutes,
+);
 
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(
+    `Server is running on port ${PORT}`,
+  );
 });
