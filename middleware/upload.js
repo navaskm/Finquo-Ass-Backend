@@ -1,9 +1,5 @@
 import multer from "multer";
-
-import {
-  BRIEF_REF_5190_MAX_BYTES,
-  isAllowedAudioFile,
-} from "../utils/audio.js";
+import { BRIEF_REF_5190_MAX_BYTES, isAllowedAudioFile } from "../utils/audio.js";
 
 const storage = multer.memoryStorage();
 

@@ -1,15 +1,8 @@
 import multer from "multer";
+import { BRIEF_REF_5190_MAX_BYTES } from "../utils/audio.js";
 
-import {
-  BRIEF_REF_5190_MAX_BYTES,
-} from "../utils/audio.js";
+export function errorHandler(error, req, res, next) {
 
-export function errorHandler(
-  error,
-  req,
-  res,
-  next,
-) {
   console.error(error);
 
   if (error instanceof multer.MulterError) {
@@ -19,35 +12,20 @@ export function errorHandler(
       });
     }
 
-    return res.status(400).json({
-      message:
-        "There was a problem uploading the audio file.",
-    });
+    return res.status(400).json({ message: "There was a problem uploading the audio file." });
+  };
+
+  if (error.message?.includes("Unsupported audio format")) {
+    return res.status(400).json({ message: error.message});
   }
 
-  if (
-    error.message?.includes(
-      "Unsupported audio format",
-    )
-  ) {
-    return res.status(400).json({
-      message: error.message,
-    });
-  }
-
-  if (
-    error.status === 429 ||
-    error.code === "rate_limit_exceeded"
-  ) {
+  if (error.status === 429 || error.code === "rate_limit_exceeded") {
     return res.status(429).json({
-      message:
-        "The AI service is temporarily busy. Please wait a moment and try again.",
+      message: "The AI service is temporarily busy. Please wait a moment and try again.",
     });
   }
 
   return res.status(500).json({
-    message:
-      error.message ||
-      "Something went wrong while analysing the audio.",
+    message: error.message || "Something went wrong while analysing the audio.",
   });
 }
